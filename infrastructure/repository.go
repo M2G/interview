@@ -31,6 +31,15 @@ func (r *SQLCRepo) GetJobById(ctx context.Context, id int64) (VideoJobDetails, e
 }
 
 /*
+
+func (r *SQLCRepository) // receiver
+GetJobByID(ctx context.Context, id int64) // nom de la methode + param
+(domain.VideoJobDetails, error) // valeur de retour
+{ ... }
+
+*/
+
+/*
 func main() {
 	fmt.Println("Hello World from Go!")
 }

@@ -1,4 +1,4 @@
-package main
+package sync
 
 import (
 	"fmt"
@@ -6,23 +6,32 @@ import (
 	"time"
 )
 
-var wg sync.WaitGroup
+// @see https://pkg.go.dev/sync#WaitGroup
 
-func test(name string) {
-	defer wg.Done()
-	for i := 1; i < 5; i++ {
-		time.Sleep(1 * time.Second)
-		fmt.Println(name, " : ", i)
-	}
+func fetch(id int, wg *sync.WaitGroup, results chan<- string) {
+	defer wg.Done() // décrémente le compteur à la sortie (même en cas de panic)
+
+	// simulation d'un traitement
+	time.Sleep(time.Duration(id*100) * time.Millisecond)
+	results <- fmt.Sprintf("ressource %d récupérée", id)
 }
 
-func main() {
-	start := time.Now()
-	wg.Add(1)
-	go test("Test")
-	wg.Add(1)
-	go test("Test2")
-	wg.Wait()
-	end := time.Now()
-	fmt.Println(end.Sub(start))
+func SyncWaitGroup() {
+	var wg sync.WaitGroup
+	results := make(chan string, 5)
+
+	for i := 1; i <= 5; i++ {
+		wg.Add(1) // incrément avant le lancement de la goroutine
+		go fetch(i, &wg, results)
+	}
+
+	// goroutine séparée pour fermer le channel une fois tout terminé
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	for r := range results {
+		fmt.Println(r)
+	}
 }

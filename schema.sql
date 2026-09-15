@@ -24,3 +24,18 @@ CREATE TABLE orders (
                         status TEXT NOT NULL DEFAULT 'pending',
                         ordered_at TIMESTAMPTZ DEFAULT now()
 );
+
+/*
+
+Liste les produits qui n'ont jamais été commandés (aucune ligne dans orders) :
+
+SELECT * FROM products LEFT JOIN orders ON products.id = orders.product_id WHERE orders.id IS NULL
+SELECT products.* FROM products LEFT JOIN orders ON products.id = orders.product_id WHERE orders.id IS NULL;
+
+
+
+
+
+
+
+ */

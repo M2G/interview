@@ -53,6 +53,27 @@ FROM products
 LEFT JOIN orders ON products.id = orders.product_id
 ORDER BY products.category, orders.ordered_at DESC NULLS LAST;
 
+Pour chaque utilisateur, affiche ses 2 commandes les plus récentes (peu importe le produit), avec le nom du produit et la date. Un utilisateur avec une seule commande n'affiche qu'une ligne ; un utilisateur sans commande n'apparaît pas :
+
+WITH RankedOrders AS (
+    SELECT
+        orders.id,
+        orders.user_id,
+        orders.product_id,
+        orders.ordered_at,
+        ROW_NUMBER() OVER (PARTITION BY orders.user_id ORDER BY orders.ordered_at DESC) as rn
+    FROM orders
+)
+
+SELECT *
+FROM RankedOrders
+JOIN products ON products.id = RankedOrders.product_id
+WHERE rn <= 2
+ORDER BY user_id, rn;
+
+
+UPDATE products SET created_at = '2026-01-01 00:00:00'
+WHERE name IN ('Poste de travail portable', 'VM Cloud Standard');
 
 
  */

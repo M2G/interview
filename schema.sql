@@ -43,7 +43,15 @@ JOIN users ON orders.user_id = users.id
 JOIN entities ON users.entity_id = entities.id
 GROUP BY entities.id, entities.name
 
+Pour chaque catégorie de produit, trouve le produit le plus récemment commandé (celui dont la commande la plus récente est la plus tardive), avec le nom du produit et la date de cette commande :
 
+SELECT DISTINCT ON (products.category)
+    products.category,
+    products.name,
+    orders.ordered_at
+FROM products
+LEFT JOIN orders ON products.id = orders.product_id
+ORDER BY products.category, orders.ordered_at DESC NULLS LAST;
 
 
 

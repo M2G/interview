@@ -32,7 +32,16 @@ Liste les produits qui n'ont jamais été commandés (aucune ligne dans orders) 
 SELECT * FROM products LEFT JOIN orders ON products.id = orders.product_id WHERE orders.id IS NULL
 SELECT products.* FROM products LEFT JOIN orders ON products.id = orders.product_id WHERE orders.id IS NULL;
 
+Pour chaque entité, calcule le nombre total de commandes passées par ses utilisateurs (une ligne par entité, avec son nom et le total) :
 
+SELECT
+    entities.id,
+    entities.name,
+    COUNT(orders.id) AS total_orders
+FROM orders
+JOIN users ON orders.user_id = users.id
+JOIN entities ON users.entity_id = entities.id
+GROUP BY entities.id, entities.name
 
 
 

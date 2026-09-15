@@ -75,5 +75,13 @@ ORDER BY user_id, rn;
 UPDATE products SET created_at = '2026-01-01 00:00:00'
 WHERE name IN ('Poste de travail portable', 'VM Cloud Standard');
 
+Pour chaque catégorie de produit, classe les produits par date de création (created_at) du plus ancien au plus récent, en affichant leur rang. Si deux produits ont exactement la même date de création dans une catégorie, ils doivent recevoir le même rang, et le rang suivant doit sauter en conséquence (ex : 1, 2, 2, 4 - pas 1, 2, 2, 3).
+
+SELECT name, category, created_at, RANK () OVER (
+    PARTITION BY category
+    ORDER BY created_at
+    ) as rank_number,
+    DENSE_RANK() OVER (PARTITION BY  category ORDER BY created_at) as dense_rank_number
+FROM products;
 
  */
